@@ -1,0 +1,41 @@
+version: "2"
+
+linters:
+  enable:
+    - errcheck
+    - goconst
+    - govet
+    - ineffassign
+    - misspell
+    - staticcheck
+    - unconvert
+    - unused
+
+  settings:
+    errcheck:
+      exclude-functions:
+        # closing without a handshake has nothing worth reporting
+        - (*github.com/coder/websocket.Conn).CloseNow
+
+  exclusions:
+    presets:
+      - std-error-handling
+    rules:
+      # Repeated fixture strings in tests are not worth extracting into constants.
+      - path: _test\.go
+        linters:
+          - goconst
+      # Device params such as v1nV repeat across device kinds by design.
+      - path: internal/metrics/devices\.go
+        linters:
+          - goconst
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/cafedomingo/pvs_exporter
