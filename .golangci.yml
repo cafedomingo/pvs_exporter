@@ -25,8 +25,8 @@ linters:
       - path: _test\.go
         linters:
           - goconst
-      # Device params such as v1nV repeat across device kinds by design.
-      - path: internal/metrics/devices\.go
+      # The mapping tables repeat params and metric names by design.
+      - path: internal/metrics/metrics\.go
         linters:
           - goconst
 
