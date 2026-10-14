@@ -97,7 +97,8 @@ The tests run against a fake PVS (`internal/pvstest`) that answers the way a
 real one was measured to, so they need no hardware. `internal/pvs` is the
 client for the local API and live websocket, `internal/metrics` maps PVS
 variables to metrics, and `internal/exporter` polls, serves and pushes; its
-`config.go` holds every interval and limit.
+`config.go` holds every interval and limit. [docs/pvs-api.md](docs/pvs-api.md)
+describes the PVS API as the exporter uses it.
 
 To release, push a `vX.Y.Z` tag; don't draft the release on GitHub, since
 the workflow creates it. The workflow tests, builds the binaries onto a
