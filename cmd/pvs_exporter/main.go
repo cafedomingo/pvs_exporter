@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"runtime/debug"
 	"syscall"
 
 	"github.com/cafedomingo/pvs_exporter/internal/exporter"
@@ -31,6 +32,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	slog.Info("serving /metrics", "address", ln.Addr().String(), "pvs", cfg.PVSHost, "push", cfg.PushURL != "")
+	info, _ := debug.ReadBuildInfo()
+	slog.Info("serving /metrics", "version", info.Main.Version, "address", ln.Addr().String(), "pvs", cfg.PVSHost, "push", cfg.PushURL != "")
 	return exporter.Run(ctx, cfg, ln)
 }

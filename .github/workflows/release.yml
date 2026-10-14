@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+
+      - name: Test
+        run: go test -race ./...
+
+      # Go stamps the version from the tag, unless untracked files mark the
+      # tree dirty, so dist/ is in .gitignore.
+      - name: Build binaries
+        env:
+          GOOS: linux
+          CGO_ENABLED: "0"
+        run: |
+          for target in amd64 arm64 arm/v7 riscv64; do
+            IFS=/ read -r arch variant <<< "$target"
+            GOARCH=$arch GOARM=${variant#v} go build -trimpath -ldflags="-s -w" \
+              -o "dist/pvs_exporter-linux-$arch$variant" ./cmd/pvs_exporter
+          done
+          cd dist && sha256sum pvs_exporter-* > SHA256SUMS
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/riscv64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --generate-notes --verify-tag

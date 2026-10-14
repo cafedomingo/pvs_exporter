@@ -9,6 +9,46 @@ It reads the PVS no faster than its data changes: the gateway every 30
 seconds, devices every minute (the PVS refreshes them every 5), and rarely
 changing settings every 5 minutes.
 
+## Setup
+
+You need the PVS's address on your network (your router's client list shows
+it) and a host that can reach it. The local API needs PVS6 software build
+61840 or later, or PVS5 build 5412 or later.
+
+1. Run the exporter, here with Docker Compose. The image runs on linux amd64,
+   arm64, armv7 and riscv64.
+
+   ```yaml
+   services:
+     pvs-exporter:
+       image: ghcr.io/cafedomingo/pvs_exporter:1
+       restart: unless-stopped
+       ports: ["9711:9711"]
+       environment:
+         PVS_HOST: 192.168.1.10
+   ```
+
+   `:1` follows every 1.x release; a new major version means a breaking
+   change, such as renamed metrics. Without Docker, download the binary for
+   your platform from the
+   [releases page](https://github.com/cafedomingo/pvs_exporter/releases) and
+   run it with the same environment, or
+   `go install github.com/cafedomingo/pvs_exporter/cmd/pvs_exporter@latest`.
+
+2. Check it: `curl -s localhost:9711/metrics | grep ^pvs_up` shows
+   `pvs_up 1` once the first poll succeeds.
+
+3. Scrape it. 30 seconds matches how often the gateway is read; only the
+   live values change faster, and `PUSH_URL` keeps every second of those:
+
+   ```yaml
+   scrape_configs:
+     - job_name: pvs
+       scrape_interval: 30s
+       static_configs:
+         - targets: ["pvs-exporter:9711"]
+   ```
+
 ## Configuration
 
 Environment variables:
@@ -44,6 +84,26 @@ to its metric.
   battery state of charge, backup time remaining
 - `pvs_inverter_*`, `pvs_meter_*`, `pvs_ess_*`, `pvs_transfer_switch_*`:
   every value the devices report, plus `*_last_report_timestamp_seconds`
+
+## Development
+
+```sh
+go test -race ./...
+golangci-lint run
+PVS_HOST=192.168.1.10 go run ./cmd/pvs_exporter
+```
+
+The tests run against a fake PVS (`internal/pvstest`) that answers the way a
+real one was measured to, so they need no hardware. `internal/pvs` is the
+client for the local API and live websocket, `internal/metrics` maps PVS
+variables to metrics, and `internal/exporter` polls, serves and pushes; its
+`config.go` holds every interval and limit.
+
+To release, push a `vX.Y.Z` tag; don't draft the release on GitHub, since
+the workflow creates it. The workflow tests, builds the binaries onto a
+GitHub release, and pushes the image to ghcr.io. Go needs a major version
+above 1 in the module path, so v2.0.0 also changes `go.mod` to
+`github.com/cafedomingo/pvs_exporter/v2`.
 
 ## License
 
