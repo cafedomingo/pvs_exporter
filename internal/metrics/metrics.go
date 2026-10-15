@@ -92,8 +92,8 @@ var deviceFields = map[string][]field{
 	},
 	"meter": {
 		{"pvs_meter_power_watts", "p3phsumKw", kilo, nil},
-		{"pvs_meter_apparent_power_va", "s3phsumKva", kilo, nil},
-		{"pvs_meter_reactive_power_var", "q3phsumKvar", kilo, nil},
+		{"pvs_meter_apparent_power_volt_amps", "s3phsumKva", kilo, nil},
+		{"pvs_meter_reactive_power_volt_amps_reactive", "q3phsumKvar", kilo, nil},
 		{"pvs_meter_power_factor_ratio", "totPfRto", 1, nil},
 		{"pvs_meter_average_voltage_volts", "vln3phavgV", 1, nil},
 		{"pvs_meter_line_voltage_volts", "v12V", 1, nil},
