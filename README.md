@@ -21,19 +21,19 @@ it) and a host that can reach it. The local API needs PVS6 software build
    ```yaml
    services:
      pvs-exporter:
-       image: ghcr.io/cafedomingo/pvs_exporter:1
+       image: ghcr.io/cafedomingo/pvs_exporter:2
        restart: unless-stopped
        ports: ["9711:9711"]
        environment:
          PVS_HOST: 192.168.1.10
    ```
 
-   `:1` follows every 1.x release; a new major version means a breaking
+   `:2` follows every 2.x release; a new major version means a breaking
    change, such as renamed metrics. Without Docker, download the binary for
    your platform from the
    [releases page](https://github.com/cafedomingo/pvs_exporter/releases) and
    run it with the same environment, or
-   `go install github.com/cafedomingo/pvs_exporter/cmd/pvs_exporter@latest`.
+   `go install github.com/cafedomingo/pvs_exporter/v2/cmd/pvs_exporter@latest`.
 
 2. Check it: `curl -s localhost:9711/metrics | grep ^pvs_up` shows
    `pvs_up 1` once the first poll succeeds.
@@ -110,6 +110,6 @@ describes the PVS API as the exporter uses it.
 
 To release, push a `vX.Y.Z` tag; don't draft the release on GitHub, since
 the workflow creates it. The workflow tests, builds the binaries onto a
-GitHub release, and pushes the image to ghcr.io. Go needs a major version
-above 1 in the module path, so v2.0.0 also changes `go.mod` to
-`github.com/cafedomingo/pvs_exporter/v2`.
+GitHub release, and pushes the image to ghcr.io. Go puts the major version in
+the module path, so a new major version also changes it in `go.mod` and every
+import.

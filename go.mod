@@ -1,4 +1,4 @@
-module github.com/cafedomingo/pvs_exporter
+module github.com/cafedomingo/pvs_exporter/v2
 
 go 1.27
 

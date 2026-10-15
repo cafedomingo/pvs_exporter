@@ -11,8 +11,8 @@ import (
 	"testing/synctest"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/metrics"
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/metrics"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 // receiver records pushes and answers with status.

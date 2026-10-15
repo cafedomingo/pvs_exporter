@@ -1,6 +1,6 @@
 package metrics
 
-import "github.com/cafedomingo/pvs_exporter/internal/pvs"
+import "github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 
 // Live returns the samples for one live data frame.
 func Live(f pvs.Frame) []Sample {

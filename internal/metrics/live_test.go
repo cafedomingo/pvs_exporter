@@ -3,7 +3,7 @@ package metrics
 import (
 	"testing"
 
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 func TestLive(t *testing.T) {

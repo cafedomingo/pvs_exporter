@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/cafedomingo/pvs_exporter/internal/metrics"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/metrics"
 )
 
 func env(vars map[string]string) func(string) string {

@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
-	"github.com/cafedomingo/pvs_exporter/internal/pvstest"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvstest"
 )
 
 const uptime = "/sys/info/uptime"

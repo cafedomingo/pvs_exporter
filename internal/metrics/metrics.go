@@ -2,7 +2,7 @@
 // in the Prometheus text format.
 package metrics
 
-import "github.com/cafedomingo/pvs_exporter/internal/pvs"
+import "github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 
 // PVS units to Prometheus base units.
 const (
