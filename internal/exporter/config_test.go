@@ -1,6 +1,7 @@
 package exporter
 
 import (
+	"log/slog"
 	"reflect"
 	"testing"
 
@@ -32,11 +33,22 @@ func TestConfigFromEnv(t *testing.T) {
 	}
 }
 
+func TestConfigFromEnvReadsTheLogLevel(t *testing.T) {
+	c, err := ConfigFromEnv(env(map[string]string{"PVS_HOST": "pvs", "LOG_LEVEL": "debug"}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.LogLevel != slog.LevelDebug {
+		t.Errorf("log level = %v, want DEBUG", c.LogLevel)
+	}
+}
+
 func TestConfigFromEnvRejects(t *testing.T) {
 	for name, vars := range map[string]map[string]string{
 		"no host":   {},
 		"bad label": {"PVS_HOST": "pvs", "PUSH_LABELS": "job"},
 		"no name":   {"PVS_HOST": "pvs", "PUSH_LABELS": "=pvs"},
+		"bad level": {"PVS_HOST": "pvs", "LOG_LEVEL": "loud"},
 	} {
 		if _, err := ConfigFromEnv(env(vars)); err == nil {
 			t.Errorf("%s: no error", name)
