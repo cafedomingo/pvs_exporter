@@ -22,10 +22,10 @@ pvs_up 1
 	}
 }
 
-func TestFormatTypesCounters(t *testing.T) {
-	samples := []Sample{{Name: "pvs_requests_total", Value: 3, Counter: true}}
+func TestFormatTypesTotalsAsCounters(t *testing.T) {
+	samples := []Sample{{Name: "pvs_requests_total", Value: 3}, {Name: "pvs_meter_net_energy_kwh", Value: 2}}
 
-	want := "# TYPE pvs_requests_total counter\npvs_requests_total 3\n"
+	want := "# TYPE pvs_meter_net_energy_kwh gauge\npvs_meter_net_energy_kwh 2\n# TYPE pvs_requests_total counter\npvs_requests_total 3\n"
 	if got := string(Format(samples)); got != want {
 		t.Errorf("Format = %q, want %q", got, want)
 	}

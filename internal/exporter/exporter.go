@@ -144,18 +144,18 @@ func (e *exporter) serveMetrics(w http.ResponseWriter, _ *http.Request) {
 		{Name: "pvs_up", Value: gauge(s.up)},
 		{Name: "pvs_poll_duration_seconds", Value: s.duration.Seconds()},
 		{Name: "pvs_live_connected", Value: gauge(e.connected.Load())},
-		{Name: "pvs_live_frames_total", Value: float64(e.liveFrames.Load()), Counter: true},
+		{Name: "pvs_live_frames_total", Value: float64(e.liveFrames.Load())},
 	}
 	for _, r := range e.client.Requests() {
 		kind := []metrics.Label{{Name: "request", Value: r.Kind}}
 		samples = append(samples,
-			metrics.Sample{Name: "pvs_requests_total", Labels: kind, Value: float64(r.Total), Counter: true},
-			metrics.Sample{Name: "pvs_request_failures_total", Labels: kind, Value: float64(r.Failures), Counter: true})
+			metrics.Sample{Name: "pvs_requests_total", Labels: kind, Value: float64(r.Total)},
+			metrics.Sample{Name: "pvs_request_failures_total", Labels: kind, Value: float64(r.Failures)})
 	}
 	if p := e.pusher; p != nil {
 		samples = append(samples,
 			metrics.Sample{Name: "pvs_push_queued_frames", Value: float64(p.queued.Load())},
-			metrics.Sample{Name: "pvs_push_dropped_frames_total", Value: float64(p.dropped.Load()), Counter: true})
+			metrics.Sample{Name: "pvs_push_dropped_frames_total", Value: float64(p.dropped.Load())})
 	}
 	samples = append(samples, s.samples...)
 	if f := e.latest.Load(); f != nil {

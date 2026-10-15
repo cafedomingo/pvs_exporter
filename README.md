@@ -72,9 +72,9 @@ your scrape uses so the pushed series line up with the scraped ones.
 
 ## Metrics
 
-All metrics are prefixed `pvs_`, and are gauges except the exporter's own
-counters. Devices carry `serial` and `model` labels, and per-leg values a
-`leg` label.
+All metrics are prefixed `pvs_`. Those ending in `_total` are counters and
+the rest are gauges. Devices carry `serial` and `model` labels, and per-leg
+values a `leg` label.
 [internal/metrics/metrics.go](internal/metrics/metrics.go) maps each PVS reading
 to its metric.
 
