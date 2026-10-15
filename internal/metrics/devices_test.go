@@ -60,7 +60,8 @@ func TestDevices(t *testing.T) {
 	}{
 		{"pvs_meter_power_watts", []Label{meter, {"model", "PVS6M0400c"}}, 710.282},
 		{"pvs_meter_leg_power_watts", []Label{meter, {"leg", "2"}}, 260.967},
-		{"pvs_meter_reactive_power_var", []Label{meter}, -735.327},
+		{"pvs_meter_apparent_power_volt_amps", []Label{meter}, 1081.716},
+		{"pvs_meter_reactive_power_volt_amps_reactive", []Label{meter}, -735.327},
 		{"pvs_meter_last_report_timestamp_seconds", []Label{meter}, 1791966300},
 		{"pvs_meter_import_energy_kwh_total", []Label{meter}, 27028.25},
 		{"pvs_meter_export_energy_kwh_total", []Label{meter}, 9780.450195},
