@@ -100,10 +100,10 @@ var deviceFields = map[string][]field{
 		{"pvs_meter_current_amps", "i3phsumA", 1, nil},
 		{"pvs_meter_frequency_hertz", "freqHz", 1, nil},
 		{"pvs_meter_ct_scale_factor", "ctSclFctr", 1, nil},
-		{"pvs_meter_energy_kwh_total", "ltea3phsumKwh", 1, nil},
 		{"pvs_meter_import_energy_kwh_total", "posLtea3phsumKwh", 1, nil},
 		{"pvs_meter_export_energy_kwh_total", "negLtea3phsumKwh", 1, nil},
-		{"pvs_meter_net_energy_kwh_total", "netLtea3phsumKwh", 1, nil},
+		// falls while exporting, so a gauge without _total
+		{"pvs_meter_net_energy_kwh", "netLtea3phsumKwh", 1, nil},
 		{"pvs_meter_leg_power_watts", "p1Kw", kilo, leg1},
 		{"pvs_meter_leg_power_watts", "p2Kw", kilo, leg2},
 		{"pvs_meter_leg_current_amps", "i1A", 1, leg1},
