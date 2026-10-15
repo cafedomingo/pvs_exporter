@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sync/atomic"
 	"time"
 
 	"github.com/cafedomingo/pvs_exporter/internal/metrics"
@@ -14,11 +15,13 @@ import (
 // pusher sends live frames to PUSH_URL, keeping them in order until a push
 // succeeds.
 type pusher struct {
-	cfg    Config
-	http   *http.Client
-	queue  []pvs.Frame
-	last   int64 // time of the last frame added
-	outage outage
+	cfg     Config
+	http    *http.Client
+	queue   []pvs.Frame
+	last    int64 // time of the last frame added
+	outage  outage
+	queued  atomic.Int64 // len(queue), for /metrics
+	dropped atomic.Uint64
 }
 
 func newPusher(c Config) *pusher {
@@ -49,8 +52,10 @@ func (p *pusher) add(f pvs.Frame) {
 	p.last = f.Time
 	if len(p.queue) == queueMax {
 		p.queue = p.queue[1:]
+		p.dropped.Add(1)
 	}
 	p.queue = append(p.queue, f)
+	p.queued.Store(int64(len(p.queue)))
 }
 
 func (p *pusher) push(ctx context.Context) {
@@ -67,6 +72,7 @@ func (p *pusher) push(ctx context.Context) {
 	}
 	p.outage.ok()
 	p.queue = p.queue[:0]
+	p.queued.Store(0)
 }
 
 func (p *pusher) send(ctx context.Context, body []byte) error {

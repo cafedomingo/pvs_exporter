@@ -36,7 +36,7 @@ func Gateway(vars map[string]string) []Sample {
 	out = append(out, info)
 	for _, i := range interfaces(vars) {
 		if state := text(vars[pvs.NetStateVar(i)]); state != "" {
-			out = append(out, Sample{"pvs_gateway_interface_info", []Label{{"interface", i}, {"state", state}}, 1})
+			out = append(out, Sample{Name: "pvs_gateway_interface_info", Labels: []Label{{"interface", i}, {"state", state}}, Value: 1})
 		}
 	}
 	return out

@@ -9,11 +9,12 @@ import (
 // Label is one metric label.
 type Label struct{ Name, Value string }
 
-// Sample is one metric value. Every metric is a gauge.
+// Sample is one metric value, a gauge unless Counter.
 type Sample struct {
-	Name   string
-	Labels []Label
-	Value  float64
+	Name    string
+	Labels  []Label
+	Value   float64
+	Counter bool
 }
 
 // ContentType is the media type of the text format Format and AppendPush
@@ -30,7 +31,11 @@ func Format(samples []Sample) []byte {
 	var b []byte
 	for i, s := range sorted {
 		if i == 0 || s.Name != sorted[i-1].Name {
-			b = append(b, "# TYPE "+s.Name+" gauge\n"...)
+			kind := "gauge"
+			if s.Counter {
+				kind = "counter"
+			}
+			b = append(b, "# TYPE "+s.Name+" "+kind+"\n"...)
 		}
 		b = appendSample(b, s, nil, 0)
 	}
