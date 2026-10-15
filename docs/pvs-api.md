@@ -82,7 +82,7 @@ e.g. `v1nV` and `v2nV`. The params the exporter reads:
 | Kind | Params |
 |---|---|
 | `inverter` | `p3phsumKw`, `ltea3phsumKwh`, `tHtsnkDegc`, `vln3phavgV`, `i3phsumA`, `freqHz`; DC side `pMppt1Kw`, `vMppt1V`, `iMppt1A` |
-| `meter` | `p3phsumKw`, `s3phsumKva`, `q3phsumKvar`, `totPfRto`, `vln3phavgV`, `v12V`, `i3phsumA`, `freqHz`, `ctSclFctr`, `ltea3phsumKwh`, `posLtea3phsumKwh` (import), `negLtea3phsumKwh` (export), `netLtea3phsumKwh`; per leg `p1Kw`, `i1A`, `v1nV` |
+| `meter` | `p3phsumKw`, `s3phsumKva`, `q3phsumKvar`, `totPfRto`, `vln3phavgV`, `v12V`, `i3phsumA`, `freqHz`, `ctSclFctr`, `posLtea3phsumKwh` (import), `negLtea3phsumKwh` (export), `netLtea3phsumKwh`; per leg `p1Kw`, `i1A`, `v1nV` |
 | `ess` | `p3phsumKw`, `vBattV`, `min`/`maxTBattCellDegc`, `min`/`maxVBattCellV`, `socVal`, `customerSocVal`, `sohVal`, `chrgLimitPmaxKw`, `dischrgLimPmaxKw`, `tInvtrDegc`, `negLtea3phsumKwh` (charged), `posLtea3phsumKwh` (discharged), `opMode`; per leg `v1nV` |
 | `transfer_switch` | `vSpplyV`, `tDegc`, `midStEnum`, `pvd1StEnum`; per leg `v1nGridV`, `v1nV` |
 
