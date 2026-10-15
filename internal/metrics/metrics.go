@@ -35,7 +35,7 @@ var gatewayFields = []field{
 	{"pvs_gateway_flash_usage_ratio", pvs.FlashUsageVar, percent, nil},
 	{"pvs_gateway_flash_wear_ratio", pvs.FlashWearVar, 1, nil},
 	{"pvs_gateway_uptime_seconds", pvs.UptimeVar, 1, nil},
-	{"pvs_gateway_usb_erase_count", pvs.USBEraseVar, 1, nil},
+	{"pvs_gateway_usb_erases_total", pvs.USBEraseVar, 1, nil},
 	{"pvs_gateway_broadband_connected", pvs.BroadbandVar, 1, nil},
 	{"pvs_gateway_cell_connected", pvs.CellVar, 1, nil},
 	{"pvs_gateway_low_data_mode", pvs.LowDataVar, 1, nil},
