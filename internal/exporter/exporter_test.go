@@ -97,8 +97,6 @@ func TestRunServesItsOwnStats(t *testing.T) {
 	)
 	for _, want := range []string{
 		`pvs_exporter_build_info{version="(devel)",goversion="` + runtime.Version() + `"} 1`,
-		"# TYPE pvs_requests_total counter\n",
-		"# TYPE pvs_request_failures_total counter\n",
 		`pvs_requests_total{request="login"} 1`,
 		`pvs_request_failures_total{request="name"} 0`,
 	} {

@@ -9,12 +9,11 @@ import (
 // Label is one metric label.
 type Label struct{ Name, Value string }
 
-// Sample is one metric value, a gauge unless Counter.
+// Sample is one metric value.
 type Sample struct {
-	Name    string
-	Labels  []Label
-	Value   float64
-	Counter bool
+	Name   string
+	Labels []Label
+	Value  float64
 }
 
 // ContentType is the media type of the text format Format and AppendPush
@@ -32,7 +31,7 @@ func Format(samples []Sample) []byte {
 	for i, s := range sorted {
 		if i == 0 || s.Name != sorted[i-1].Name {
 			kind := "gauge"
-			if s.Counter {
+			if strings.HasSuffix(s.Name, "_total") { // Prometheus's suffix for counters, and only counters
 				kind = "counter"
 			}
 			b = append(b, "# TYPE "+s.Name+" "+kind+"\n"...)
