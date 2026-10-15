@@ -50,7 +50,7 @@ func TestGateway(t *testing.T) {
 		"pvs_gateway_ram_usage_ratio":            0.07,
 		"pvs_gateway_flash_wear_ratio":           0.1,
 		"pvs_gateway_uptime_seconds":             4201.33,
-		"pvs_gateway_usb_erase_count":            0,
+		"pvs_gateway_usb_erases_total":           0,
 		"pvs_gateway_broadband_connected":        1,
 		"pvs_gateway_cell_connected":             0,
 		"pvs_gateway_low_data_mode":              0,
