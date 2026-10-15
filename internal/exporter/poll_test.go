@@ -184,6 +184,38 @@ func TestPollClearsDevicesThePVSNoLongerLists(t *testing.T) {
 	}
 }
 
+func TestPollLogsThePVSWhenFoundChangedOrRestarted(t *testing.T) {
+	logs := captureLogs(t)
+	fake := pvstest.New(t, gateway)
+	p := newPoller(pvs.NewClient(fake.Host(), "", time.Second))
+	t0 := time.Now()
+	if _, err := p.poll(t.Context(), t0); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := p.poll(t.Context(), t0.Add(30*time.Second)); err != nil {
+		t.Fatal(err)
+	}
+	fake.Set(map[string]string{"/sys/info/sw_rev": "2025.11.03.61900", "/sys/info/uptime": "211.5"})
+	if _, err := p.poll(t.Context(), t0.Add(time.Minute)); err != nil {
+		t.Fatal(err)
+	}
+
+	var got []string
+	for line := range strings.Lines(logs.String()) {
+		if _, msg, ok := strings.Cut(line, "msg="); ok && strings.HasPrefix(msg, `"PVS `) {
+			got = append(got, strings.TrimSpace(msg))
+		}
+	}
+	want := []string{
+		`"PVS found" pvs_type=PVS6 software_version=2025.10.20.61846 sys_type=Storage uptime=1h10m1s`,
+		`"PVS restarted" uptime=3m31s`,
+		`"PVS changed" software_version=2025.11.03.61900 was_software_version=2025.10.20.61846`,
+	}
+	if !slices.Equal(got, want) {
+		t.Errorf("PVS logs:\n%s\nwant:\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
+	}
+}
+
 func hasMetric(samples []metrics.Sample, name string) bool {
 	return slices.ContainsFunc(samples, func(s metrics.Sample) bool { return s.Name == name })
 }

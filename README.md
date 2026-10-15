@@ -61,6 +61,7 @@ Environment variables:
 | `PUSH_URL` | Optional. Push the live data, timestamped by the PVS, to this URL instead of serving it on `/metrics`. |
 | `PUSH_USER`, `PUSH_PASSWORD` | Optional HTTP Basic auth for `PUSH_URL`. |
 | `PUSH_LABELS` | Labels added to pushed samples, e.g. `job=pvs,instance=pvs-exporter:9711`. |
+| `LOG_LEVEL` | `debug`, `info`, `warn` or `error`. Default `info`. |
 
 Without `PUSH_URL`, the latest live values appear on `/metrics` at your scrape
 interval. With it, every one-second sample is kept: the exporter POSTs

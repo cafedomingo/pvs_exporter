@@ -14,18 +14,20 @@ import (
 )
 
 func main() {
-	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, nil)))
-	if err := run(); err != nil {
+	level := new(slog.LevelVar)
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: level})))
+	if err := run(level); err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
 }
 
-func run() error {
+func run(level *slog.LevelVar) error {
 	cfg, err := exporter.ConfigFromEnv(os.Getenv)
 	if err != nil {
 		return err
 	}
+	level.Set(cfg.LogLevel)
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	ln, err := net.Listen("tcp", cfg.Listen)

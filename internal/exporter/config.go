@@ -4,6 +4,7 @@ package exporter
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -44,6 +45,7 @@ type Config struct {
 	PushUser     string
 	PushPassword string
 	PushLabels   []metrics.Label
+	LogLevel     slog.Level
 }
 
 // ConfigFromEnv reads the configuration with getenv, e.g. os.Getenv.
@@ -63,6 +65,11 @@ func ConfigFromEnv(getenv func(string) string) (Config, error) {
 		c.Listen = defaultListen
 	}
 	c.LiveURL = pvs.LiveURL(c.PVSHost)
+	if s := getenv("LOG_LEVEL"); s != "" {
+		if err := c.LogLevel.UnmarshalText([]byte(s)); err != nil {
+			return Config{}, fmt.Errorf("LOG_LEVEL: %w", err)
+		}
+	}
 	for pair := range strings.SplitSeq(getenv("PUSH_LABELS"), ",") {
 		if pair == "" {
 			continue

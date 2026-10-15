@@ -88,7 +88,7 @@ func (e *exporter) pollLoop(ctx context.Context) {
 }
 
 func (e *exporter) liveLoop(ctx context.Context) {
-	o := outage{what: "live data websocket"}
+	o := outage{what: "streaming live data"}
 	for {
 		if err := e.client.EnableLive(ctx); err != nil {
 			slog.Debug("enabling the live data websocket failed", "err", err)
