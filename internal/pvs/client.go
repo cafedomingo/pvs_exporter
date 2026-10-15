@@ -11,6 +11,7 @@ import (
 	"net/http/cookiejar"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -23,21 +24,59 @@ var errExpired = errors.New("PVS session expired")
 // Client reads varserver variables. It logs in before its first request and
 // again when the session expires.
 type Client struct {
-	base string
-	http *http.Client
+	base     string
+	http     *http.Client
+	requests map[string]*requestCount
 
 	mu       sync.Mutex
 	password string
 	loggedIn bool
 }
 
+// requestKinds are the requests the client counts: logins and the three
+// /vars queries.
+var requestKinds = []string{"login", "name", "match", "set"}
+
+type requestCount struct{ total, failures atomic.Uint64 }
+
+// RequestCount is how many requests of one kind the client has made, and how
+// many failed. The PVS's 400 for an unknown name or an empty match, and its 401
+// for an expired session, are answers, not failures.
+type RequestCount struct {
+	Kind            string
+	Total, Failures uint64
+}
+
+// Requests returns the count for each kind of request.
+func (c *Client) Requests() []RequestCount {
+	var out []RequestCount
+	for _, kind := range requestKinds {
+		n := c.requests[kind]
+		out = append(out, RequestCount{kind, n.total.Load(), n.failures.Load()})
+	}
+	return out
+}
+
+func (c *Client) count(kind string, failed bool) {
+	n := c.requests[kind]
+	n.total.Add(1)
+	if failed {
+		n.failures.Add(1)
+	}
+}
+
 // NewClient returns a client for the PVS at host. An empty password is
 // derived from the serial number, as the PVS does by default.
 func NewClient(host, password string, timeout time.Duration) *Client {
 	jar, _ := cookiejar.New(nil) // fails only for a bad public suffix list
+	requests := map[string]*requestCount{}
+	for _, kind := range requestKinds {
+		requests[kind] = &requestCount{}
+	}
 	return &Client{
 		base:     "https://" + host,
 		password: password,
+		requests: requests,
 		http: &http.Client{
 			Jar:     jar,
 			Timeout: timeout,
@@ -101,6 +140,15 @@ func (c *Client) login(ctx context.Context) error {
 		}
 		c.password = serial[len(serial)-passwordLen:]
 	}
+	if err := c.authenticate(ctx); err != nil {
+		return err
+	}
+	c.loggedIn = true
+	return nil
+}
+
+func (c *Client) authenticate(ctx context.Context) (err error) {
+	defer func() { c.count("login", err != nil) }()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.base+loginPath, nil)
 	if err != nil {
 		return err
@@ -114,11 +162,12 @@ func (c *Client) login(ctx context.Context) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("logging in: PVS answered %s", resp.Status)
 	}
-	c.loggedIn = true
 	return nil
 }
 
-func (c *Client) post(ctx context.Context, q string) (map[string]string, error) {
+func (c *Client) post(ctx context.Context, q string) (vars map[string]string, err error) {
+	kind, _, _ := strings.Cut(q, "=")
+	defer func() { c.count(kind, err != nil && !errors.Is(err, ErrBadRequest) && !errors.Is(err, errExpired)) }()
 	// raw, not URL-encoded: the PVS takes paths and set=name=value as they are
 	body := strings.NewReader(q + objFormat)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.base+varsPath, body)
@@ -133,7 +182,6 @@ func (c *Client) post(ctx context.Context, q string) (map[string]string, error) 
 	defer resp.Body.Close()
 	switch resp.StatusCode {
 	case http.StatusOK:
-		var vars map[string]string
 		if err := json.NewDecoder(resp.Body).Decode(&vars); err != nil {
 			return nil, fmt.Errorf("decoding the PVS's answer: %w", err)
 		}

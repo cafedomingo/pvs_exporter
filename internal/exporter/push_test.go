@@ -64,8 +64,8 @@ pvs_live_timestamp_seconds{job="pvs"} 101 101000
 	if r.auth != "u:p" {
 		t.Errorf("auth = %q, want u:p", r.auth)
 	}
-	if len(p.queue) != 0 {
-		t.Errorf("%d frames left after a good push", len(p.queue))
+	if len(p.queue) != 0 || p.queued.Load() != 0 {
+		t.Errorf("%d frames left after a good push, %d reported", len(p.queue), p.queued.Load())
 	}
 }
 
@@ -98,6 +98,9 @@ func TestQueueDropsTheOldestPastTheCap(t *testing.T) {
 
 	if len(p.queue) != queueMax || p.queue[0].Time != 2 {
 		t.Errorf("queue has %d frames from time %d, want %d from 2", len(p.queue), p.queue[0].Time, queueMax)
+	}
+	if p.queued.Load() != int64(queueMax) || p.dropped.Load() != 1 {
+		t.Errorf("queued = %d, dropped = %d; want %d, 1", p.queued.Load(), p.dropped.Load(), queueMax)
 	}
 }
 

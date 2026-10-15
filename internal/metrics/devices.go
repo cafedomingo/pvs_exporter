@@ -29,7 +29,7 @@ func appendFields(out []Sample, fields []field, values map[string]string, labels
 			parse = number
 		}
 		if v, ok := parse(values[f.key]); ok {
-			out = append(out, Sample{f.metric, slices.Concat(labels, f.labels), v * f.scale})
+			out = append(out, Sample{Name: f.metric, Labels: slices.Concat(labels, f.labels), Value: v * f.scale})
 		}
 	}
 	return out
@@ -41,5 +41,5 @@ func infoSample(metric string, fields []infoField, values map[string]string, lab
 	for _, f := range fields {
 		labels = append(labels, Label{f.label, text(values[f.key])})
 	}
-	return Sample{metric, labels, 1}
+	return Sample{Name: metric, Labels: labels, Value: 1}
 }

@@ -72,12 +72,19 @@ your scrape uses so the pushed series line up with the scraped ones.
 
 ## Metrics
 
-All metrics are gauges, prefixed `pvs_`. Devices carry `serial` and `model`
-labels, and per-leg values a `leg` label.
+All metrics are prefixed `pvs_`, and are gauges except the exporter's own
+counters. Devices carry `serial` and `model` labels, and per-leg values a
+`leg` label.
 [internal/metrics/metrics.go](internal/metrics/metrics.go) maps each PVS reading
 to its metric.
 
 - `pvs_up`, `pvs_poll_duration_seconds`, `pvs_live_connected`: exporter status
+- `pvs_exporter_build_info`, `pvs_live_frames_total`, and
+  `pvs_requests_total` and `pvs_request_failures_total` by `request` (`login`,
+  `name`, `match`, `set`): exporter stats. The PVS's 400 for an unknown name or
+  an empty match, and its 401 for an expired session, don't count as failures.
+  With `PUSH_URL`, also `pvs_push_queued_frames` and
+  `pvs_push_dropped_frames_total`.
 - `pvs_gateway_*`: CPU, RAM and flash use, flash wear, uptime, connectivity,
   battery reserve; `pvs_gateway_info` and `pvs_gateway_interface_info` carry
   versions and link states as labels

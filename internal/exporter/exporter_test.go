@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"runtime"
 	"strings"
 	"sync"
 	"testing"
@@ -87,11 +88,34 @@ func TestRunServesPolledAndLiveMetrics(t *testing.T) {
 	)
 }
 
+func TestRunServesItsOwnStats(t *testing.T) {
+	url := start(t, Config{})
+
+	body := scrape(t, url,
+		"pvs_live_frames_total 1\n",
+		`pvs_requests_total{request="match"} 1`,
+	)
+	for _, want := range []string{
+		`pvs_exporter_build_info{version="(devel)",goversion="` + runtime.Version() + `"} 1`,
+		"# TYPE pvs_requests_total counter\n",
+		"# TYPE pvs_request_failures_total counter\n",
+		`pvs_requests_total{request="login"} 1`,
+		`pvs_request_failures_total{request="name"} 0`,
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("/metrics lacks %q:\n%s", want, body)
+		}
+	}
+	if strings.Contains(body, "pvs_push_") {
+		t.Errorf("push stats without push:\n%s", body)
+	}
+}
+
 func TestRunWithPushKeepsLiveValuesOffMetrics(t *testing.T) {
 	_, pushURL := newReceiver(t)
 	url := start(t, Config{PushURL: pushURL})
 
-	body := scrape(t, url, "pvs_up 1\n", "pvs_live_connected 1\n")
+	body := scrape(t, url, "pvs_up 1\n", "pvs_live_connected 1\n", "pvs_push_queued_frames ", "pvs_push_dropped_frames_total 0\n")
 	if strings.Contains(body, "pvs_live_power_watts") {
 		t.Errorf("live values on /metrics while pushing:\n%s", body)
 	}
