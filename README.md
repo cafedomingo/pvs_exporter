@@ -105,7 +105,3 @@ the workflow creates it. The workflow tests, builds the binaries onto a
 GitHub release, and pushes the image to ghcr.io. Go needs a major version
 above 1 in the module path, so v2.0.0 also changes `go.mod` to
 `github.com/cafedomingo/pvs_exporter/v2`.
-
-## License
-
-MIT
