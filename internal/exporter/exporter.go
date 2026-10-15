@@ -12,8 +12,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/metrics"
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/metrics"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 type snapshot struct {

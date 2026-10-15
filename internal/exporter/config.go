@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/metrics"
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/metrics"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 // Tunables, set by how fast the PVS's data changes.

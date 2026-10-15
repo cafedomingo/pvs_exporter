@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 // number parses a varserver number. Varserver defaults such as "N/A" and

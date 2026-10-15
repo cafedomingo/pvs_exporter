@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/metrics"
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
-	"github.com/cafedomingo/pvs_exporter/internal/pvstest"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/metrics"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvstest"
 )
 
 // gateway is a PVS6 (Storage) with every core and extra variable.

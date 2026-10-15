@@ -1,6 +1,6 @@
 package metrics
 
-import "github.com/cafedomingo/pvs_exporter/internal/pvs"
+import "github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 
 // CoreVars are read every poll. Each exists on the PVS5 and the PVS6, so the
 // batch never fails for an unknown name.

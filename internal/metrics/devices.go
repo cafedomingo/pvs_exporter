@@ -3,7 +3,7 @@ package metrics
 import (
 	"slices"
 
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 // Devices returns the samples for every device, by kind and then index.

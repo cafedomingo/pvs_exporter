@@ -7,7 +7,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 // fixture is a match=/sys/devices/ answer from the homelab PVS6, with serial

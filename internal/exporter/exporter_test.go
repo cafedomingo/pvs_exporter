@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/pvstest"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvstest"
 )
 
 const liveFrame = `{"notification": "power", "params": {"time": 1791944553, "pv_p": 3.2, "soc": 0.68}}`

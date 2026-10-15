@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cafedomingo/pvs_exporter/internal/metrics"
-	"github.com/cafedomingo/pvs_exporter/internal/pvs"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/metrics"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/pvs"
 )
 
 // poller reads the PVS at the pace its data changes, keeping the results of

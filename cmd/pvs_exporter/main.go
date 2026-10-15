@@ -10,7 +10,7 @@ import (
 	"runtime/debug"
 	"syscall"
 
-	"github.com/cafedomingo/pvs_exporter/internal/exporter"
+	"github.com/cafedomingo/pvs_exporter/v2/internal/exporter"
 )
 
 func main() {
