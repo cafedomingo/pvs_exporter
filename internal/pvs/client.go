@@ -86,6 +86,8 @@ func NewClient(host, password string, timeout time.Duration) *Client {
 }
 
 // selfSignedTransport accepts any certificate, since the PVS's is self-signed.
+// CodeQL's go/disabled-certificate-check passes over functions named for
+// this, so renaming or inlining it brings the alert back.
 func selfSignedTransport() *http.Transport {
 	return &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 }

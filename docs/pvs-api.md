@@ -14,9 +14,9 @@ The PVS serves HTTPS on its LAN address with a self-signed certificate.
 
 **Login.** `GET /auth?login` with HTTP Basic auth, user `ssm_owner`. The
 default password is the last 5 characters of the PVS serial number. The PVS
-answers with a `session` cookie for later requests. Without a session it
-answers 400 (errorcode `0x0100`); with a session it does not know, 401
-(errorcode `0x0012`), so a 401 means log in again.
+answers with a `session` cookie, Secure and HttpOnly, for later requests.
+Without a session it answers 400 (errorcode `0x0100`); with a session it does
+not know, 401 (errorcode `0x0012`), so a 401 means log in again.
 
 **Serial number.** `/sys/info/serialnum` reads without a session, so the
 default password can be derived before logging in.
