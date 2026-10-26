@@ -94,7 +94,7 @@ func (p *PVS) serve(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		p.session = rand.Text()
-		http.SetCookie(w, &http.Cookie{Name: "session", Value: p.session})
+		http.SetCookie(w, &http.Cookie{Name: "session", Value: p.session, Secure: true, HttpOnly: true})
 	case r.URL.Path == "/vars" && r.Method == http.MethodPost:
 		body, _ := io.ReadAll(r.Body)
 		p.queries = append(p.queries, string(body))

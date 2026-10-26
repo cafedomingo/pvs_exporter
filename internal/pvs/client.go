@@ -78,12 +78,16 @@ func NewClient(host, password string, timeout time.Duration) *Client {
 		password: password,
 		requests: requests,
 		http: &http.Client{
-			Jar:     jar,
-			Timeout: timeout,
-			// the PVS has a self-signed certificate
-			Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
+			Jar:       jar,
+			Timeout:   timeout,
+			Transport: selfSignedTransport(),
 		},
 	}
+}
+
+// selfSignedTransport accepts any certificate, since the PVS's is self-signed.
+func selfSignedTransport() *http.Transport {
+	return &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 }
 
 // Vars reads the named variables in one request.
